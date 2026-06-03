@@ -80,11 +80,11 @@
       "commandPalette": [
         {
           "command": "toon.jsonToToon",
-          "when": "editorLangId == json || editorLangId == jsonc"
+          "when": "editorTextFocus"
         },
         {
           "command": "toon.toonToJson",
-          "when": "editorLangId == toon"
+          "when": "editorTextFocus"
         },
         {
           "command": "toon.convertToToonFile",

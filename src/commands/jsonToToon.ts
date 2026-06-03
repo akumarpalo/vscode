@@ -9,21 +9,23 @@ export async function jsonToToonCommand(): Promise<void> {
 
   const document = editor.document
   const languageId = document.languageId
-
-  if (languageId === 'toon') {
-    vscode.window.showInformationMessage('This file is already TOON.')
-    return
-  }
-
-  if (languageId !== 'json' && languageId !== 'jsonc') {
-    vscode.window.showInformationMessage('This command works on JSON or JSONC files.')
-    return
-  }
-
   const selection = editor.selection
-  const range = selection.isEmpty
-    ? getFullDocumentRange(document)
-    : new vscode.Range(selection.start, selection.end)
+  const hasSelection = !selection.isEmpty
+
+  if (!hasSelection) {
+    if (languageId === 'toon') {
+      vscode.window.showInformationMessage('This file is already TOON.')
+      return
+    }
+    if (languageId !== 'json' && languageId !== 'jsonc') {
+      vscode.window.showInformationMessage('Select JSON text to convert, or open a .json file.')
+      return
+    }
+  }
+
+  const range = hasSelection
+    ? new vscode.Range(selection.start, selection.end)
+    : getFullDocumentRange(document)
 
   const text = document.getText(range)
 
@@ -32,8 +34,9 @@ export async function jsonToToonCommand(): Promise<void> {
     return
   }
 
+  const parseLanguageId = (languageId === 'json' || languageId === 'jsonc') ? languageId : 'json'
   const options = getEncodeOptions()
-  const result = jsonToToon(text, languageId, options)
+  const result = jsonToToon(text, parseLanguageId, options)
 
   if (!result.success) {
     vscode.window.showErrorMessage(`Conversion failed: ${result.error}`)
@@ -49,7 +52,7 @@ export async function jsonToToonCommand(): Promise<void> {
     editBuilder.replace(range, result.output)
   })
 
-  if (selection.isEmpty) {
+  if (!hasSelection) {
     await vscode.languages.setTextDocumentLanguage(document, 'toon')
   }
 

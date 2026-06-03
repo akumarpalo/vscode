@@ -9,21 +9,23 @@ export async function toonToJsonCommand(): Promise<void> {
 
   const document = editor.document
   const languageId = document.languageId
-
-  if (languageId === 'json' || languageId === 'jsonc') {
-    vscode.window.showInformationMessage('This file is already JSON.')
-    return
-  }
-
-  if (languageId !== 'toon') {
-    vscode.window.showInformationMessage('This command works on TOON files.')
-    return
-  }
-
   const selection = editor.selection
-  const range = selection.isEmpty
-    ? getFullDocumentRange(document)
-    : new vscode.Range(selection.start, selection.end)
+  const hasSelection = !selection.isEmpty
+
+  if (!hasSelection) {
+    if (languageId === 'json' || languageId === 'jsonc') {
+      vscode.window.showInformationMessage('This file is already JSON.')
+      return
+    }
+    if (languageId !== 'toon') {
+      vscode.window.showInformationMessage('Select TOON text to convert, or open a .toon file.')
+      return
+    }
+  }
+
+  const range = hasSelection
+    ? new vscode.Range(selection.start, selection.end)
+    : getFullDocumentRange(document)
 
   const text = document.getText(range)
 
@@ -49,7 +51,7 @@ export async function toonToJsonCommand(): Promise<void> {
     editBuilder.replace(range, result.output)
   })
 
-  if (selection.isEmpty) {
+  if (!hasSelection) {
     await vscode.languages.setTextDocumentLanguage(document, 'json')
   }
 
