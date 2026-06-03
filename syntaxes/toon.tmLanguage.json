@@ -1,0 +1,140 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "TOON",
+  "scopeName": "source.toon",
+  "patterns": [
+    { "include": "#list-item" },
+    { "include": "#array-header-line" },
+    { "include": "#key-value-line" },
+    { "include": "#key-value-line-simple" },
+    { "include": "#key-nested" },
+    { "include": "#tabular-row" }
+  ],
+  "repository": {
+    "list-item": {
+      "match": "^(\\s*)(-)\\s",
+      "captures": {
+        "2": { "name": "punctuation.definition.list.begin.toon" }
+      }
+    },
+    "array-header-line": {
+      "comment": "Matches: key[N]{fields}: (end of line, nested content below)",
+      "match": "^(\\s*)([\\w][\\w.]*)(\\[)(\\d+)([|\\t])?(\\])(?:(\\{)([^}]*)(\\}))?(:)\\s*$",
+      "captures": {
+        "2": { "name": "support.type.property-name.toon" },
+        "3": { "name": "punctuation.definition.array.begin.toon" },
+        "4": { "name": "constant.numeric.toon" },
+        "5": { "name": "punctuation.separator.delimiter.toon" },
+        "6": { "name": "punctuation.definition.array.end.toon" },
+        "7": { "name": "punctuation.definition.fieldlist.begin.toon" },
+        "8": { "name": "variable.other.field.toon" },
+        "9": { "name": "punctuation.definition.fieldlist.end.toon" },
+        "10": { "name": "punctuation.separator.key-value.toon" }
+      }
+    },
+    "key-value-line": {
+      "comment": "Matches: key[N]{fields}: inline-values (primitive array with header)",
+      "match": "^(\\s*)([\\w][\\w.]*)(\\[)(\\d+)([|\\t])?(\\])(?:(\\{)([^}]*)(\\}))?(:)\\s+(.+)$",
+      "captures": {
+        "2": { "name": "support.type.property-name.toon" },
+        "3": { "name": "punctuation.definition.array.begin.toon" },
+        "4": { "name": "constant.numeric.toon" },
+        "5": { "name": "punctuation.separator.delimiter.toon" },
+        "6": { "name": "punctuation.definition.array.end.toon" },
+        "7": { "name": "punctuation.definition.fieldlist.begin.toon" },
+        "8": { "name": "variable.other.field.toon" },
+        "9": { "name": "punctuation.definition.fieldlist.end.toon" },
+        "10": { "name": "punctuation.separator.key-value.toon" },
+        "11": { "patterns": [{ "include": "#inline-values" }] }
+      }
+    },
+    "key-value-line-simple": {
+      "comment": "Matches: key: value",
+      "match": "^(\\s*)([\\w][\\w.]*)(:)\\s+(.+)$",
+      "captures": {
+        "2": { "name": "support.type.property-name.toon" },
+        "3": { "name": "punctuation.separator.key-value.toon" },
+        "4": { "patterns": [{ "include": "#value" }] }
+      }
+    },
+    "key-nested": {
+      "comment": "Matches: key: (end of line, nested content below)",
+      "match": "^(\\s*)([\\w][\\w.]*)(:)\\s*$",
+      "captures": {
+        "2": { "name": "support.type.property-name.toon" },
+        "3": { "name": "punctuation.separator.key-value.toon" }
+      }
+    },
+    "inline-values": {
+      "patterns": [
+        { "include": "#string-quoted" },
+        { "include": "#constant-boolean" },
+        { "include": "#constant-null" },
+        { "include": "#constant-numeric" },
+        { "include": "#punctuation-delimiter" }
+      ]
+    },
+    "tabular-row": {
+      "comment": "Catch-all for lines that are tabular data rows (values separated by delimiters)",
+      "patterns": [
+        { "include": "#string-quoted" },
+        { "include": "#constant-boolean" },
+        { "include": "#constant-null" },
+        { "include": "#constant-numeric" },
+        { "include": "#punctuation-delimiter" }
+      ]
+    },
+    "value": {
+      "patterns": [
+        { "include": "#string-quoted" },
+        { "include": "#constant-boolean" },
+        { "include": "#constant-null" },
+        { "include": "#constant-numeric" },
+        { "include": "#empty-array" },
+        { "include": "#string-unquoted" }
+      ]
+    },
+    "string-quoted": {
+      "name": "string.quoted.double.toon",
+      "begin": "\"",
+      "end": "\"",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.string.begin.toon" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.string.end.toon" }
+      },
+      "patterns": [
+        { "include": "#escape-sequence" }
+      ]
+    },
+    "escape-sequence": {
+      "name": "constant.character.escape.toon",
+      "match": "\\\\(?:[\"\\\\/nrt]|u[0-9a-fA-F]{4})"
+    },
+    "constant-boolean": {
+      "name": "constant.language.boolean.toon",
+      "match": "\\b(true|false)\\b"
+    },
+    "constant-null": {
+      "name": "constant.language.null.toon",
+      "match": "\\bnull\\b"
+    },
+    "constant-numeric": {
+      "name": "constant.numeric.toon",
+      "match": "-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?(?=\\s*[,|\\t]|\\s*$)"
+    },
+    "empty-array": {
+      "name": "constant.language.toon",
+      "match": "\\[\\]"
+    },
+    "punctuation-delimiter": {
+      "name": "punctuation.separator.toon",
+      "match": "[,|]"
+    },
+    "string-unquoted": {
+      "name": "string.unquoted.toon",
+      "match": "[^,|\\s\"][^,|]*"
+    }
+  }
+}
