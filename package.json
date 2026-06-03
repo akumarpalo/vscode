@@ -110,12 +110,12 @@
       "editor/context": [
         {
           "command": "toon.jsonToToon",
-          "when": "editorLangId == json || editorLangId == jsonc",
+          "when": "editorLangId == json || editorLangId == jsonc || editorHasSelection",
           "group": "1_modification"
         },
         {
           "command": "toon.toonToJson",
-          "when": "editorLangId == toon",
+          "when": "editorLangId == toon || editorHasSelection",
           "group": "1_modification"
         }
       ]
