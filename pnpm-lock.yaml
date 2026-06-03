@@ -7,6 +7,13 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@toon-format/toon':
+        specifier: ^2.3.0
+        version: 2.3.0
+      jsonc-parser:
+        specifier: ^3.2.0
+        version: 3.3.1
     devDependencies:
       '@antfu/eslint-config':
         specifier: ^6.2.0
@@ -478,6 +485,9 @@ packages:
 
   '@textlint/types@15.4.0':
     resolution: {integrity: sha512-ZMwJgw/xjxJufOD+IB7I2Enl9Si4Hxo04B76RwUZ5cKBKzOPcmd6WvGe2F7jqdgmTdGnfMU+Bo/joQrjPNIWqg==}
+
+  '@toon-format/toon@2.3.0':
+    resolution: {integrity: sha512-/Ew9etdRQKVMnm9fDaCG0JjyAOK/O7T0M97oum1aW4W+UR8ZhVVPBanIV7oWgHBiGlnVxV9M55PWQCHofDV07w==}
 
   '@tybys/wasm-util@0.10.1':
     resolution: {integrity: sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg==}
@@ -3059,6 +3069,8 @@ snapshots:
   '@textlint/types@15.4.0':
     dependencies:
       '@textlint/ast-node-types': 15.4.0
+
+  '@toon-format/toon@2.3.0': {}
 
   '@tybys/wasm-util@0.10.1':
     dependencies:

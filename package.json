@@ -1,24 +1,27 @@
 {
   "publisher": "toon-format",
   "name": "toon",
-  "displayName": "Token-Oriented Object Notation (TOON) Support",
+  "displayName": "TOON — JSON ↔ TOON Converter",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "packageManager": "pnpm@10.23.0",
-  "description": "Visual Studio Code extension for TOON format support",
+  "description": "Bidirectional JSON/TOON conversion, syntax highlighting, and real-time validation for the TOON format",
   "license": "MIT",
-  "homepage": "https://github.com/toon-format/vscode#readme",
+  "homepage": "https://github.com/akumarpalo/vscode#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/toon-format/vscode.git"
+    "url": "https://github.com/akumarpalo/vscode.git"
   },
   "bugs": {
-    "url": "https://github.com/toon-format/vscode/issues"
+    "url": "https://github.com/akumarpalo/vscode/issues"
   },
   "keywords": [
     "toon",
+    "json",
+    "converter",
     "format",
-    "serialization"
+    "serialization",
+    "token-efficient"
   ],
   "categories": [
     "Programming Languages",
@@ -27,15 +30,168 @@
   "main": "./dist/extension.mjs",
   "engines": {
     "vscode": "^1.95.0",
-    "node": ">=24.0.0"
+    "node": ">=18.0.0"
+  },
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    }
   },
   "contributes": {
+    "languages": [
+      {
+        "id": "toon",
+        "aliases": [
+          "TOON",
+          "toon"
+        ],
+        "extensions": [
+          ".toon"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "toon",
+        "scopeName": "source.toon",
+        "path": "./syntaxes/toon.tmLanguage.json"
+      }
+    ],
     "commands": [
       {
-        "command": "toon.helloWorld",
-        "title": "TOON: Hello World"
+        "command": "toon.jsonToToon",
+        "title": "TOON: Convert JSON to TOON"
+      },
+      {
+        "command": "toon.toonToJson",
+        "title": "TOON: Convert TOON to JSON"
+      },
+      {
+        "command": "toon.convertToToonFile",
+        "title": "TOON: Convert to TOON (Save As…)"
+      },
+      {
+        "command": "toon.convertToJsonFile",
+        "title": "TOON: Convert to JSON (Save As…)"
       }
-    ]
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "toon.jsonToToon",
+          "when": "editorLangId == json || editorLangId == jsonc"
+        },
+        {
+          "command": "toon.toonToJson",
+          "when": "editorLangId == toon"
+        },
+        {
+          "command": "toon.convertToToonFile",
+          "when": "editorLangId == json || editorLangId == jsonc"
+        },
+        {
+          "command": "toon.convertToJsonFile",
+          "when": "editorLangId == toon"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "toon.convertToToonFile",
+          "when": "resourceExtname == .json",
+          "group": "7_toon"
+        },
+        {
+          "command": "toon.convertToJsonFile",
+          "when": "resourceExtname == .toon",
+          "group": "7_toon"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "toon.jsonToToon",
+          "when": "editorLangId == json || editorLangId == jsonc",
+          "group": "1_modification"
+        },
+        {
+          "command": "toon.toonToJson",
+          "when": "editorLangId == toon",
+          "group": "1_modification"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "toon.jsonToToon",
+        "key": "ctrl+alt+t",
+        "mac": "cmd+alt+t",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "toon.toonToJson",
+        "key": "ctrl+alt+j",
+        "mac": "cmd+alt+j",
+        "when": "editorTextFocus"
+      }
+    ],
+    "configuration": {
+      "title": "TOON",
+      "properties": {
+        "toon.encode.indent": {
+          "type": "number",
+          "default": 2,
+          "description": "Indentation size for TOON output"
+        },
+        "toon.encode.delimiter": {
+          "type": "string",
+          "enum": [
+            ",",
+            "|",
+            "\t"
+          ],
+          "default": ",",
+          "description": "Delimiter for tabular arrays in TOON output"
+        },
+        "toon.encode.keyFolding": {
+          "type": "string",
+          "enum": [
+            "off",
+            "safe"
+          ],
+          "default": "off",
+          "description": "Enable dotted key folding (e.g., a.b.c: value)"
+        },
+        "toon.decode.strict": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use strict mode when decoding TOON"
+        },
+        "toon.decode.expandPaths": {
+          "type": "string",
+          "enum": [
+            "off",
+            "safe"
+          ],
+          "default": "off",
+          "description": "Expand dotted keys into nested objects when decoding"
+        },
+        "toon.json.indent": {
+          "type": "number",
+          "default": 2,
+          "description": "Indentation size for JSON output"
+        },
+        "toon.openAfterConvert": {
+          "type": "boolean",
+          "default": true,
+          "description": "Open the converted file after saving"
+        },
+        "toon.validation.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable real-time TOON validation in the Problems panel"
+        }
+      }
+    }
   },
   "scripts": {
     "build": "tsdown",
@@ -47,6 +203,10 @@
     "package": "pnpm build && vsce package",
     "publish": "pnpm build && vsce publish",
     "vscode:prepublish": "pnpm build"
+  },
+  "dependencies": {
+    "@toon-format/toon": "^2.3.0",
+    "jsonc-parser": "^3.2.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^6.2.0",
