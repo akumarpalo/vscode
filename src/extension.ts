@@ -1,14 +1,21 @@
 import * as vscode from 'vscode'
+import {
+  convertToJsonFileCommand,
+  convertToToonFileCommand,
+  jsonToToonCommand,
+  toonToJsonCommand,
+} from './commands'
+import { setupDiagnostics } from './diagnostics'
 
 export function activate(context: vscode.ExtensionContext): void {
-  // Register the hello world command
-  const disposable = vscode.commands.registerCommand('toon.helloWorld', () => {
-    vscode.window.showInformationMessage('Hello World from TOON!')
-  })
+  context.subscriptions.push(
+    vscode.commands.registerCommand('toon.jsonToToon', jsonToToonCommand),
+    vscode.commands.registerCommand('toon.toonToJson', toonToJsonCommand),
+    vscode.commands.registerCommand('toon.convertToToonFile', convertToToonFileCommand),
+    vscode.commands.registerCommand('toon.convertToJsonFile', convertToJsonFileCommand),
+  )
 
-  context.subscriptions.push(disposable)
+  setupDiagnostics(context)
 }
 
-export function deactivate(): void {
-  // Cleanup if needed
-}
+export function deactivate(): void {}
