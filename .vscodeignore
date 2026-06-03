@@ -8,6 +8,10 @@ src/
 .gitignore
 eslint.config.mjs
 pnpm-lock.yaml
+pnpm-workspace.yaml
 tsconfig.json
-*.md
-!README.md
+tsdown.config.ts
+CONTRIBUTING.md
+**/*.map
+**/*.ts
+!dist/**

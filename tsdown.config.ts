@@ -1,10 +1,8 @@
-import type { UserConfig, UserConfigFn } from 'tsdown/config'
 import { defineConfig } from 'tsdown/config'
 
-const config: UserConfig | UserConfigFn = defineConfig({
+export default defineConfig({
   entry: 'src/extension.ts',
   external: ['vscode'],
-  dts: true,
+  dts: false,
+  clean: true,
 })
-
-export default config
