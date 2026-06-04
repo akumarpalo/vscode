@@ -1,6 +1,6 @@
 import { decode, encode } from '@toon-format/toon'
 import type { DecodeOptions, EncodeOptions } from '@toon-format/toon'
-import { parse as parseJsonc } from 'jsonc-parser'
+import { parse as parseJsonc, printParseErrorCode } from 'jsonc-parser'
 import type { ParseError } from 'jsonc-parser'
 
 export interface ConversionSuccess {
@@ -24,7 +24,6 @@ export interface JsonToToonOptions {
 
 export interface ToonToJsonOptions {
   indent?: number
-  strict?: boolean
   expandPaths?: 'off' | 'safe'
 }
 
@@ -38,7 +37,8 @@ export function jsonToToon(input: string, languageId: string, options: JsonToToo
       if (errors.length > 0) {
         const firstError = errors[0]!
         const line = offsetToLine(input, firstError.offset)
-        return { success: false, error: `JSONC parse error at offset ${firstError.offset}`, line }
+        const errorType = printParseErrorCode(firstError.error)
+        return { success: false, error: `${errorType} at line ${line}`, line }
       }
     }
     else {
@@ -69,9 +69,7 @@ export function jsonToToon(input: string, languageId: string, options: JsonToToo
 
 export function toonToJson(input: string, options: ToonToJsonOptions = {}): ConversionResult {
   try {
-    const decodeOptions: DecodeOptions = {}
-    if (options.strict !== undefined)
-      decodeOptions.strict = options.strict
+    const decodeOptions: DecodeOptions = { strict: true }
     if (options.expandPaths !== undefined)
       decodeOptions.expandPaths = options.expandPaths
 
@@ -95,6 +93,7 @@ function offsetToLine(text: string, offset: number): number {
   return line
 }
 
+// V8-specific: matches "at position N" format. Safe because VS Code always runs on V8.
 function extractJsonErrorLine(error: SyntaxError, input: string): number | undefined {
   const match = error.message.match(/position\s+(\d+)/)
   if (match) {

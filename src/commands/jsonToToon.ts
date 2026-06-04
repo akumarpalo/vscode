@@ -48,9 +48,14 @@ export async function jsonToToonCommand(): Promise<void> {
     return
   }
 
-  await editor.edit(editBuilder => {
+  const applied = await editor.edit(editBuilder => {
     editBuilder.replace(range, result.output)
   })
+
+  if (!applied) {
+    vscode.window.showErrorMessage('Failed to apply edit — the document may have changed.')
+    return
+  }
 
   if (!hasSelection) {
     await vscode.languages.setTextDocumentLanguage(document, 'toon')

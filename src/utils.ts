@@ -14,7 +14,6 @@ export function getDecodeOptions(): ToonToJsonOptions {
   const config = vscode.workspace.getConfiguration('toon')
   return {
     indent: config.get<number>('json.indent', 2),
-    strict: config.get<boolean>('decode.strict', true),
     expandPaths: config.get<'off' | 'safe'>('decode.expandPaths', 'off'),
   }
 }

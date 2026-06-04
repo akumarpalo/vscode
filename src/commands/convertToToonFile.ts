@@ -7,8 +7,15 @@ export async function convertToToonFileCommand(uri?: vscode.Uri): Promise<void> 
   if (!sourceUri)
     return
 
-  const fileContent = await vscode.workspace.fs.readFile(sourceUri)
-  const text = new TextDecoder('utf-8').decode(fileContent)
+  let text: string
+  try {
+    const fileContent = await vscode.workspace.fs.readFile(sourceUri)
+    text = new TextDecoder('utf-8').decode(fileContent)
+  }
+  catch (e) {
+    vscode.window.showErrorMessage(`Failed to read file: ${(e as Error).message}`)
+    return
+  }
 
   if (!text.trim()) {
     vscode.window.showInformationMessage('Nothing to convert — file is empty.')

@@ -2,39 +2,49 @@ import * as vscode from 'vscode'
 import { decode } from '@toon-format/toon'
 
 let diagnosticCollection: vscode.DiagnosticCollection
-let debounceTimer: ReturnType<typeof setTimeout> | undefined
+const debounceTimers = new Map<string, ReturnType<typeof setTimeout>>()
 
 export function setupDiagnostics(context: vscode.ExtensionContext): void {
   diagnosticCollection = vscode.languages.createDiagnosticCollection('toon')
   context.subscriptions.push(diagnosticCollection)
 
   context.subscriptions.push(
-    vscode.workspace.onDidOpenTextDocument(onDocumentEvent),
+    vscode.workspace.onDidOpenTextDocument(validateToonDocument),
     vscode.workspace.onDidChangeTextDocument((e) => {
-      onDocumentEventDebounced(e.document)
+      validateDebounced(e.document)
     }),
     vscode.workspace.onDidCloseTextDocument((document) => {
+      const key = document.uri.toString()
+      const timer = debounceTimers.get(key)
+      if (timer) {
+        clearTimeout(timer)
+        debounceTimers.delete(key)
+      }
       diagnosticCollection.delete(document.uri)
     }),
   )
 
-  vscode.workspace.textDocuments.forEach(onDocumentEvent)
+  vscode.workspace.textDocuments.forEach(validateToonDocument)
 }
 
-function onDocumentEvent(document: vscode.TextDocument): void {
-  validateToonDocument(document)
-}
+function validateDebounced(document: vscode.TextDocument): void {
+  const key = document.uri.toString()
+  const existing = debounceTimers.get(key)
+  if (existing)
+    clearTimeout(existing)
 
-function onDocumentEventDebounced(document: vscode.TextDocument): void {
-  if (debounceTimer)
-    clearTimeout(debounceTimer)
-  debounceTimer = setTimeout(() => validateToonDocument(document), 300)
+  debounceTimers.set(
+    key,
+    setTimeout(() => {
+      debounceTimers.delete(key)
+      validateToonDocument(document)
+    }, 300),
+  )
 }
 
 function validateToonDocument(document: vscode.TextDocument): void {
-  if (document.languageId !== 'toon') {
+  if (document.languageId !== 'toon')
     return
-  }
 
   const config = vscode.workspace.getConfiguration('toon')
   if (!config.get<boolean>('validation.enable', true)) {

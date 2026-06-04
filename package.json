@@ -161,11 +161,6 @@
           "default": "off",
           "description": "Enable dotted key folding (e.g., a.b.c: value)"
         },
-        "toon.decode.strict": {
-          "type": "boolean",
-          "default": true,
-          "description": "Use strict mode when decoding TOON"
-        },
         "toon.decode.expandPaths": {
           "type": "string",
           "enum": [
