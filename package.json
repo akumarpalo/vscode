@@ -27,7 +27,7 @@
     "Programming Languages",
     "Formatters"
   ],
-  "main": "./dist/extension.mjs",
+  "main": "./dist/extension.cjs",
   "engines": {
     "vscode": "^1.95.0",
     "node": ">=18.0.0"
