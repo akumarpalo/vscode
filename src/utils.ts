@@ -1,5 +1,5 @@
-import * as vscode from 'vscode'
 import type { JsonToToonOptions, ToonToJsonOptions } from './converter'
+import * as vscode from 'vscode'
 
 export function getEncodeOptions(): JsonToToonOptions {
   const config = vscode.workspace.getConfiguration('toon')

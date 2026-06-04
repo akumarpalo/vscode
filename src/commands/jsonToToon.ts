@@ -48,7 +48,7 @@ export async function jsonToToonCommand(): Promise<void> {
     return
   }
 
-  const applied = await editor.edit(editBuilder => {
+  const applied = await editor.edit((editBuilder) => {
     editBuilder.replace(range, result.output)
   })
 

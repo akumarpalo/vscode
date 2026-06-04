@@ -1,5 +1,5 @@
-import * as vscode from 'vscode'
 import { decode } from '@toon-format/toon'
+import * as vscode from 'vscode'
 
 let diagnosticCollection: vscode.DiagnosticCollection
 const debounceTimers = new Map<string, ReturnType<typeof setTimeout>>()

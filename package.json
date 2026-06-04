@@ -195,7 +195,7 @@
     "lint:fix": "eslint . --fix",
     "test": "echo \"No tests yet\" && exit 0",
     "test:types": "tsc --noEmit",
-    "package": "pnpm build && vsce package",
+    "package": "pnpm build && vsce package --no-dependencies",
     "publish": "pnpm build && vsce publish",
     "vscode:prepublish": "pnpm build"
   },

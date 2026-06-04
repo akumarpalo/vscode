@@ -1,7 +1,7 @@
-import { decode, encode } from '@toon-format/toon'
 import type { DecodeOptions, EncodeOptions } from '@toon-format/toon'
-import { parse as parseJsonc, printParseErrorCode } from 'jsonc-parser'
 import type { ParseError } from 'jsonc-parser'
+import { decode, encode } from '@toon-format/toon'
+import { parse as parseJsonc, printParseErrorCode } from 'jsonc-parser'
 
 export interface ConversionSuccess {
   success: true
