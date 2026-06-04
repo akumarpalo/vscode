@@ -61,19 +61,19 @@
     "commands": [
       {
         "command": "toon.jsonToToon",
-        "title": "TOON: Convert JSON to TOON"
+        "title": "Convert JSON to TOON"
       },
       {
         "command": "toon.toonToJson",
-        "title": "TOON: Convert TOON to JSON"
+        "title": "Convert TOON to JSON"
       },
       {
         "command": "toon.convertToToonFile",
-        "title": "TOON: Convert to TOON (Save As…)"
+        "title": "Convert to TOON (Save As…)"
       },
       {
         "command": "toon.convertToJsonFile",
-        "title": "TOON: Convert to JSON (Save As…)"
+        "title": "Convert to JSON (Save As…)"
       }
     ],
     "menus": {
